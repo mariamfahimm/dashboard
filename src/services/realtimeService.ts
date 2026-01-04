@@ -44,10 +44,11 @@ class RealtimeService {
     try {
       this.socket = io(API_BASE_URL, {
         auth: token ? { token } : undefined,
-        transports: ['websocket', 'polling'],
+        transports: ['polling', 'websocket'], // Try polling first, then websocket
         reconnection: true,
-        reconnectionDelay: 1000,
-        reconnectionAttempts: 5,
+        reconnectionDelay: 2000,
+        reconnectionAttempts: 3, // Reduce attempts to avoid spam
+        timeout: 10000,
       })
 
       this.socket.on('connect', () => {
@@ -63,6 +64,8 @@ class RealtimeService {
       this.socket.on('connect_error', (error) => {
         console.error('❌ Socket.io connection error:', error)
         this.isConnected = false
+        // Don't show error to user - real-time updates are non-critical
+        // The system will work without WebSocket connections
       })
 
       // Listen for student.update events
