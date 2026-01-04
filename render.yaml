@@ -1,0 +1,27 @@
+services:
+  # Backend API Service
+  - type: web
+    name: educonnect-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      # Add other environment variables in Render dashboard
+      # MONGO_URI, JWT_SECRET, FRONTEND_URL, etc.
+
+  # Frontend Static Site
+  - type: web
+    name: educonnect-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://educonnect-backend.onrender.com/api
+        # Update this after backend is deployed
+
